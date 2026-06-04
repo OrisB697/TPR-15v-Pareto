@@ -1,0 +1,7 @@
+com\pareto\service\FileService.class
+com\pareto\Main.class
+com\pareto\service\FileService$FileType.class
+com\pareto\ui\ConsoleUI.class
+com\pareto\service\ParetoSetFinder.class
+com\pareto\model\Alternative.class
+com\pareto\service\FileService$1.class
