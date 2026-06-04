@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="maven-antrun-" default="main">
+  <target name="main">
+    <mkdir dir="C:\TPR\release-tpr\prog-tpr\target/release" />
+    <mkdir dir="C:\TPR\release-tpr\prog-tpr\target/release/examples" />
+    <copy file="C:\TPR\release-tpr\prog-tpr\target/ParetoSetFinder.exe" todir="C:\TPR\release-tpr\prog-tpr\target/release" failonerror="false" />
+    <copy file="C:\TPR\release-tpr\prog-tpr\target/pareto-optimizer-1.0.0.jar" todir="C:\TPR\release-tpr\prog-tpr\target/release" />
+    <copy file="src/main/resources/icon.ico" todir="C:\TPR\release-tpr\prog-tpr\target/release" failonerror="false" />
+    <copy todir="C:\TPR\release-tpr\prog-tpr\target/release/examples" failonerror="false">
+      <fileset includes="**/*" dir="C:\TPR\release-tpr\prog-tpr/examples" />
+    </copy>
+  </target>
+</project>

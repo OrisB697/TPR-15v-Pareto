@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
 
     <name>Pareto Set Finder</name>
-    <description>Программа для выделения множества Парето на дискретном множестве альтернатив с поддержкой Excel</description>
+    <description>Программа для выделения множества Парето</description>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -21,7 +21,6 @@
     </properties>
 
     <dependencies>
-        <!-- Apache POI для работы с Excel файлами -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -32,7 +31,6 @@
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.3</version>
         </dependency>
-        <!-- Логирование для Apache POI -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
@@ -46,42 +44,46 @@
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>${main.class}</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.11.0</version>
                 <configuration>
                     <source>11</source>
                     <target>11</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <!-- Плагин для создания fat JAR со всеми зависимостями -->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.4.2</version>
+                <version>3.6.0</version>
                 <configuration>
                     <archive>
                         <manifest>
                             <mainClass>${main.class}</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <Built-By>Student</Built-By>
+                        </manifestEntries>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
                 <executions>
                     <execution>
@@ -90,6 +92,88 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>2.4.1</version>
+                <executions>
+                    <execution>
+                        <id>l4j-cli</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>console</headerType>
+                            <outfile>${project.build.directory}/ParetoSetFinder.exe</outfile>
+                            <jar>${project.build.directory}/${project.build.finalName}.jar</jar>
+                            <errTitle>Pareto Set Finder - Error</errTitle>
+                            <classPath>
+                                <mainClass>${main.class}</mainClass>
+                            </classPath>
+                            <icon>src/main/resources/icon.ico</icon>
+                            <jre>
+                                <minVersion>11</minVersion>
+                                <maxVersion>21</maxVersion>
+                                <path>C:\Program Files\Java\jdk-11\jre</path>
+                                <initialHeapSize>64</initialHeapSize>
+                                <maxHeapSize>512</maxHeapSize>
+                                <opts>
+                                    <opt>-Dfile.encoding=UTF-8</opt>
+                                </opts>
+                            </jre>
+                            <versionInfo>
+                                <fileVersion>1.0.0.0</fileVersion>
+                                <txtFileVersion>1.0.0</txtFileVersion>
+                                <fileDescription>Pareto Set Finder</fileDescription>
+                                <copyright>2024</copyright>
+                                <productVersion>1.0.0.0</productVersion>
+                                <txtProductVersion>1.0.0</txtProductVersion>
+                                <productName>Pareto Set Finder</productName>
+                                <internalName>ParetoSetFinder</internalName>
+                                <originalFilename>ParetoSetFinder.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>create-release</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <mkdir dir="${project.build.directory}/release"/>
+                                <mkdir dir="${project.build.directory}/release/examples"/>
+                                
+                                <copy file="${project.build.directory}/ParetoSetFinder.exe"
+                                      todir="${project.build.directory}/release" 
+                                      failonerror="false"/>
+                                
+                                <copy file="${project.build.directory}/${project.build.finalName}.jar"
+                                      todir="${project.build.directory}/release"/>
+                                
+                                <copy file="src/main/resources/icon.ico"
+                                      todir="${project.build.directory}/release" 
+                                      failonerror="false"/>
+                                
+                                <copy todir="${project.build.directory}/release/examples" failonerror="false">
+                                    <fileset dir="${project.basedir}/examples" includes="**/*"/>
+                                </copy>
+                            </target>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
